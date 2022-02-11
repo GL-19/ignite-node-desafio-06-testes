@@ -22,12 +22,12 @@ describe("Create User", () => {
       password,
     });
 
-    const isEqual = await compare(password, user.password);
+    const passwordMatch = await compare(password, user.password);
 
     expect(user).toHaveProperty("id");
     expect(user.name).toBe("Glauber Loiola");
     expect(user.email).toBe("glauber@email.com");
-    expect(isEqual).toBe(true);
+    expect(passwordMatch).toBe(true);
   });
 
   it("should not be able to create a new user if email already exists", async () => {
