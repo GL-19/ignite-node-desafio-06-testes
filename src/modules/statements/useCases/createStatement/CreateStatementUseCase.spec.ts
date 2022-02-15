@@ -11,7 +11,7 @@ let statementsRepository: InMemoryStatementsRepository;
 let createUserUseCase: CreateUserUseCase;
 let createStatementUseCase: CreateStatementUseCase;
 
-describe("Create Statemente", () => {
+describe("Create Statement", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     statementsRepository = new InMemoryStatementsRepository();
