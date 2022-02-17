@@ -49,7 +49,7 @@ describe("Create Statement Controller", () => {
     expect(response.body).toHaveProperty("updated_at");
   });
 
-  it("should not be able to create a deposit statement without valid a token", async () => {
+  it("should not be able to create a deposit statement without a valid token", async () => {
     const response = await request(app)
       .post("/api/v1/statements/deposit")
       .send({
