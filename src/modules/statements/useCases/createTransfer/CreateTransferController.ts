@@ -10,14 +10,14 @@ class CreateTransferController {
 
     const createTransferUseCase = container.resolve(CreateTransferUseCase);
 
-    const responseData = await createTransferUseCase.execute({
+    const senderStatement = await createTransferUseCase.execute({
       amount,
       description,
       sender_id,
       recipient_id,
     });
 
-    return response.status(201).json(responseData);
+    return response.status(201).json(senderStatement);
   }
 }
 

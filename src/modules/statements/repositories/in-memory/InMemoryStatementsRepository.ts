@@ -57,9 +57,9 @@ export class InMemoryStatementsRepository implements IStatementsRepository {
         (operation.type === "transfer" &&
           operation.user_id === operation.recipient_id)
       ) {
-        return acc + operation.amount;
+        return acc + Number(operation.amount);
       } else {
-        return acc - operation.amount;
+        return acc - Number(operation.amount);
       }
     }, 0);
 

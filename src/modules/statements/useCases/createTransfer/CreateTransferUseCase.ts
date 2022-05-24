@@ -19,7 +19,7 @@ class CreateTransferUseCase {
     description,
     sender_id,
     recipient_id,
-  }: ICreateTransferDTO): Promise<Statement[]> {
+  }: ICreateTransferDTO): Promise<Statement> {
     const sender = await this.usersRepository.findById(sender_id);
 
     if (!sender) {
@@ -49,7 +49,7 @@ class CreateTransferUseCase {
       recipient_id: recipient_id,
     });
 
-    const recipientStatement = await this.statementsRepository.create({
+    await this.statementsRepository.create({
       amount,
       description,
       type: OperationType.TRANSFER,
@@ -58,7 +58,7 @@ class CreateTransferUseCase {
       recipient_id: recipient_id,
     });
 
-    return [senderStatement, recipientStatement];
+    return senderStatement;
   }
 }
 
