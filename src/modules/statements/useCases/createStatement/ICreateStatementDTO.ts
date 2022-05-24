@@ -1,6 +1,10 @@
-import { Statement } from "../../entities/Statement";
+import { OperationType, Statement } from "../../entities/Statement";
 
-export type ICreateStatementDTO = Pick<
-  Statement,
-  "user_id" | "recipient_id" | "sender_id" | "description" | "amount" | "type"
->;
+export type ICreateStatementDTO = {
+  user_id: string;
+  recipient_id?: string;
+  sender_id?: string;
+  amount: number;
+  description: string;
+  type: OperationType;
+};

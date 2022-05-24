@@ -1,6 +1,6 @@
-import { OperationType } from "@modules/statements/entities/Statement";
-import { IStatementsRepository } from "@modules/statements/repositories/IStatementsRepository";
-import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
+import { OperationType, Statement } from "../../entities/Statement";
+import { IStatementsRepository } from "../../repositories/IStatementsRepository";
+import { IUsersRepository } from "../../../users/repositories/IUsersRepository";
 import { inject, injectable } from "tsyringe";
 import { CreateTransferError } from "./CreateTransferError";
 import { ICreateTransferDTO } from "./ICreateTransferDTO";
@@ -19,7 +19,7 @@ class CreateTransferUseCase {
     description,
     sender_id,
     recipient_id,
-  }: ICreateTransferDTO): Promise<void> {
+  }: ICreateTransferDTO): Promise<Statement[]> {
     const sender = await this.usersRepository.findById(sender_id);
 
     if (!sender) {
@@ -45,14 +45,20 @@ class CreateTransferUseCase {
       description,
       type: OperationType.TRANSFER,
       user_id: sender_id,
+      sender_id: sender_id,
+      recipient_id: recipient_id,
     });
 
-    await this.statementsRepository.create({
+    const recipientStatement = await this.statementsRepository.create({
       amount,
       description,
       type: OperationType.TRANSFER,
       user_id: recipient_id,
+      sender_id: sender_id,
+      recipient_id: recipient_id,
     });
+
+    return [senderStatement, recipientStatement];
   }
 }
 
