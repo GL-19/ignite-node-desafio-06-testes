@@ -1,21 +1,19 @@
 import { OperationType } from "@modules/statements/entities/Statement";
 import { InMemoryStatementsRepository } from "@modules/statements/repositories/in-memory/InMemoryStatementsRepository";
 import { InMemoryUsersRepository } from "@modules/users/repositories/in-memory/InMemoryUsersRepository";
-import { CreateUserUseCase } from "@modules/users/useCases/createUser/CreateUserUseCase";
 import { CreateStatementError } from "./CreateStatementError";
 import { CreateStatementUseCase } from "./CreateStatementUseCase";
 import { ICreateStatementDTO } from "./ICreateStatementDTO";
 
 let usersRepository: InMemoryUsersRepository;
 let statementsRepository: InMemoryStatementsRepository;
-let createUserUseCase: CreateUserUseCase;
 let createStatementUseCase: CreateStatementUseCase;
 
 describe("Create Statement Use Case", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     statementsRepository = new InMemoryStatementsRepository();
-    createUserUseCase = new CreateUserUseCase(usersRepository);
+
     createStatementUseCase = new CreateStatementUseCase(
       usersRepository,
       statementsRepository
@@ -23,7 +21,7 @@ describe("Create Statement Use Case", () => {
   });
 
   it("should be able to create a deposit statement", async () => {
-    const user = await createUserUseCase.execute({
+    const user = await usersRepository.create({
       name: "Glauber Loiola",
       email: "glauber@email.com",
       password: "12345",
@@ -68,7 +66,7 @@ describe("Create Statement Use Case", () => {
   });
 
   it("should be able to create a withdraw statement", async () => {
-    const user = await createUserUseCase.execute({
+    const user = await usersRepository.create({
       name: "Glauber Loiola",
       email: "glauber@email.com",
       password: "12345",
@@ -97,7 +95,7 @@ describe("Create Statement Use Case", () => {
 
   it("should not be able to create a withdraw if there is not enough funds", async () => {
     expect(async () => {
-      const user = await createUserUseCase.execute({
+      const user = await usersRepository.create({
         name: "Glauber Loiola",
         email: "glauber@email.com",
         password: "12345",

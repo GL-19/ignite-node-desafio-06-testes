@@ -1,15 +1,11 @@
 import { OperationType } from "@modules/statements/entities/Statement";
 import { InMemoryStatementsRepository } from "@modules/statements/repositories/in-memory/InMemoryStatementsRepository";
 import { InMemoryUsersRepository } from "@modules/users/repositories/in-memory/InMemoryUsersRepository";
-import { CreateUserUseCase } from "@modules/users/useCases/createUser/CreateUserUseCase";
-import { CreateStatementUseCase } from "../createStatement/CreateStatementUseCase";
 import { GetBalanceError } from "./GetBalanceError";
 import { GetBalanceUseCase } from "./GetBalanceUseCase";
 
 let usersRepository: InMemoryUsersRepository;
 let statementsRepository: InMemoryStatementsRepository;
-let createUserUseCase: CreateUserUseCase;
-let createStatementUseCase: CreateStatementUseCase;
 let getBalanceUseCase: GetBalanceUseCase;
 
 describe("Get Balance Use Case", () => {
@@ -18,13 +14,6 @@ describe("Get Balance Use Case", () => {
 
     statementsRepository = new InMemoryStatementsRepository();
 
-    createUserUseCase = new CreateUserUseCase(usersRepository);
-
-    createStatementUseCase = new CreateStatementUseCase(
-      usersRepository,
-      statementsRepository
-    );
-
     getBalanceUseCase = new GetBalanceUseCase(
       statementsRepository,
       usersRepository
@@ -32,20 +21,20 @@ describe("Get Balance Use Case", () => {
   });
 
   it("should be able to get user balance", async () => {
-    const user = await createUserUseCase.execute({
+    const user = await usersRepository.create({
       name: "test name",
       email: "test@email.com",
       password: "12345",
     });
 
-    const deposit = await createStatementUseCase.execute({
+    const deposit = await statementsRepository.create({
       user_id: user.id,
       type: OperationType.DEPOSIT,
       amount: 500,
       description: "test deposit",
     });
 
-    const withdraw = await createStatementUseCase.execute({
+    const withdraw = await statementsRepository.create({
       user_id: user.id,
       type: OperationType.WITHDRAW,
       amount: 300,

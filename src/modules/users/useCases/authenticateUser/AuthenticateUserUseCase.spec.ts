@@ -1,28 +1,27 @@
 import { InMemoryUsersRepository } from "@modules/users/repositories/in-memory/InMemoryUsersRepository";
-import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
+import { hash } from "bcryptjs";
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
 import { IncorrectEmailOrPasswordError } from "./IncorrectEmailOrPasswordError";
 
 let usersRepository: InMemoryUsersRepository;
 let authenticateUserUseCase: AuthenticateUserUseCase;
-let createUserUseCase: CreateUserUseCase;
 
 describe("Authenticate User Use Case", () => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository();
     authenticateUserUseCase = new AuthenticateUserUseCase(usersRepository);
-    createUserUseCase = new CreateUserUseCase(usersRepository);
   });
 
   it("should be able to authenticate user", async () => {
     const name = "Test";
     const email = "test@email.com";
     const password = "12345";
+    const encryptedPassword = await hash(password, 8);
 
-    await createUserUseCase.execute({
+    await usersRepository.create({
       name,
       email,
-      password,
+      password: encryptedPassword,
     });
 
     const response = await authenticateUserUseCase.execute({
@@ -42,32 +41,35 @@ describe("Authenticate User Use Case", () => {
       const name = "Test";
       const email = "test@email.com";
       const password = "12345";
+      const encryptedPassword = await hash(password, 8);
 
-      await createUserUseCase.execute({
+      await usersRepository.create({
         name,
         email,
-        password,
+        password: encryptedPassword,
       });
 
-      const response = await authenticateUserUseCase.execute({
+      await authenticateUserUseCase.execute({
         email: "incorrect@email.com",
         password,
       });
     }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
   });
+
   it("should not be able to authenticate if password is incorrect", async () => {
     expect(async () => {
       const name = "Test";
       const email = "test@email.com";
       const password = "12345";
+      const encryptedPassword = await hash(password, 8);
 
-      await createUserUseCase.execute({
+      await usersRepository.create({
         name,
         email,
-        password,
+        password: encryptedPassword,
       });
 
-      const response = await authenticateUserUseCase.execute({
+      await authenticateUserUseCase.execute({
         email,
         password: "incorrect",
       });
