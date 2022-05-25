@@ -26,18 +26,18 @@ class CreateTransferUseCase {
       throw new CreateTransferError.UserNotFound();
     }
 
+    const recipient = await this.usersRepository.findById(recipient_id);
+
+    if (!recipient) {
+      throw new CreateTransferError.RecipientNotFound();
+    }
+
     const senderBalance = await this.statementsRepository.getUserBalance({
       user_id: sender_id,
     });
 
     if (senderBalance.balance < amount) {
       throw new CreateTransferError.InsufficientFunds();
-    }
-
-    const recipient = await this.usersRepository.findById(recipient_id);
-
-    if (!recipient) {
-      throw new CreateTransferError.RecipientNotFound();
     }
 
     const senderStatement = await this.statementsRepository.create({
